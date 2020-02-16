@@ -261,6 +261,11 @@ open class VersaPlayerView: View, PIPProtocol {
         controls?.secondPlayAndPauseButton?.set(active: false)
         isPlaying = false
     }
+  
+    /// Toggle mute
+    open func toggleMute() {
+      player.isMuted = !player.isMuted
+    }
     
     /// Toggle Playback
     @IBAction open func togglePlayback(sender: Any? = nil) {

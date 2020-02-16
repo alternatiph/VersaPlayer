@@ -35,6 +35,9 @@ open class VersaPlayerControls: View {
     
     /// VersaStatefulButton instance to represent the play/pause button
     @IBOutlet public weak var playPauseButton: VersaStatefulButton? = nil
+  
+    /// VersaStatefulButton instance to represent the mute/unmute button
+    @IBOutlet public weak var muteButton: VersaStatefulButton? = nil
     
     /// VersaStatefulButton instance to represent the fullscreen toggle button
     @IBOutlet public weak var fullscreenButton: VersaStatefulButton? = nil
@@ -170,6 +173,9 @@ open class VersaPlayerControls: View {
         
         playPauseButton?.target = self
         playPauseButton?.action = #selector(togglePlayback(sender:))
+      
+        muteButton?.target = self
+        muteButton?.action = #selector(toggleMute(sender:))
         
         secondPlayAndPauseButton?.target = self
         secondPlayAndPauseButton?.action = #selector(togglePlayback(sender:))
@@ -197,6 +203,8 @@ open class VersaPlayerControls: View {
         
         playPauseButton?.addTarget(self, action: #selector(togglePlayback), for: .touchUpInside)
         secondPlayAndPauseButton?.addTarget(self, action: #selector(togglePlayback), for: .touchUpInside)
+      
+        muteButton?.addTarget(self, action: #selector(toggleMute), for: .touchUpInside)
         
         fullscreenButton?.addTarget(self, action: #selector(toggleFullscreen), for: .touchUpInside)
         
@@ -407,6 +415,12 @@ open class VersaPlayerControls: View {
                 handler.play()
             }
         }
+    }
+  
+    /// Toggle mute
+    @IBAction open func toggleMute(sender: Any? = nil) {
+      handler.toggleMute()
+      muteButton?.set(active: handler.player.isMuted)
     }
     
     /// Toggle rewind
