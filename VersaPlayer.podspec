@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'VersaPlayer'
-    s.version          = '3.1.0'
+    s.version          = '3.1.1'
     s.summary          = 'Versatile AVPlayer implementation for iOS'
     
     s.description      = 'Versatile AVPlayer implementation for iOS.'
