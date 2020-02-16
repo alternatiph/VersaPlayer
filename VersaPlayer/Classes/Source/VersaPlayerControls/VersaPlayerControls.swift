@@ -71,6 +71,12 @@ open class VersaPlayerControls: View {
     /// UIView to be shown when buffering
     @IBOutlet public weak var bufferingView: View? = nil
     
+    
+    /// Custom
+    @IBOutlet public weak var secondPlayAndPauseButton: VersaStatefulButton? = nil
+    @IBOutlet public weak var combinedTimeLabel: VersaCombinedTimeLabel? = nil
+    
+    
     private var wasPlayingBeforeRewinding: Bool = false
     private var wasPlayingBeforeForwarding: Bool = false
     private var wasPlayingBeforeSeeking: Bool = false
@@ -127,6 +133,9 @@ open class VersaPlayerControls: View {
     open func timeDidChange(toTime time: CMTime) {
         currentTimeLabel?.update(toTime: time.seconds)
         totalTimeLabel?.update(toTime: handler.player.endTime().seconds)
+        
+        combinedTimeLabel?.update(toTime: time.seconds, totalTime: handler.player.endTime().seconds)
+        
         setSeekbarSlider(start: handler.player.startTime().seconds, end: handler.player.endTime().seconds, at: time.seconds)
         
         if !(handler.isSeeking || handler.isRewinding || handler.isForwarding) {
@@ -162,6 +171,9 @@ open class VersaPlayerControls: View {
         playPauseButton?.target = self
         playPauseButton?.action = #selector(togglePlayback(sender:))
         
+        secondPlayAndPauseButton?.target = self
+        secondPlayAndPauseButton?.action = #selector(togglePlayback(sender:))
+        
         fullscreenButton?.target = self
         fullscreenButton?.action = #selector(toggleFullscreen(sender:))
         
@@ -184,6 +196,7 @@ open class VersaPlayerControls: View {
         #else
         
         playPauseButton?.addTarget(self, action: #selector(togglePlayback), for: .touchUpInside)
+        secondPlayAndPauseButton?.addTarget(self, action: #selector(togglePlayback), for: .touchUpInside)
         
         fullscreenButton?.addTarget(self, action: #selector(toggleFullscreen), for: .touchUpInside)
         
@@ -269,14 +282,17 @@ open class VersaPlayerControls: View {
       NotificationCenter.default.addObserver(forName: VersaPlayer.VPlayerNotificationName.didEnd.notification, object: nil, queue: OperationQueue.main) { [weak self] (notification) in
         guard let self = self else { return }
         self.checkOwnershipOf(object: notification.object, completion: self.playPauseButton?.set(active: false))
+        self.checkOwnershipOf(object: notification.object, completion: self.secondPlayAndPauseButton?.set(active: false))
       }
       NotificationCenter.default.addObserver(forName: VersaPlayer.VPlayerNotificationName.play.notification, object: nil, queue: OperationQueue.main) { [weak self]  (notification) in
         guard let self = self else { return }
         self.checkOwnershipOf(object: notification.object, completion: self.playPauseButton?.set(active: true))
+        self.checkOwnershipOf(object: notification.object, completion: self.secondPlayAndPauseButton?.set(active: true))
       }
       NotificationCenter.default.addObserver(forName: VersaPlayer.VPlayerNotificationName.pause.notification, object: nil, queue: OperationQueue.main) {[weak self] (notification) in
         guard let self = self else { return }
         self.checkOwnershipOf(object: notification.object, completion: self.playPauseButton?.set(active: false))
+        self.checkOwnershipOf(object: notification.object, completion: self.secondPlayAndPauseButton?.set(active: false))
       }
       NotificationCenter.default.addObserver(forName: VersaPlayer.VPlayerNotificationName.endBuffering.notification, object: nil, queue: OperationQueue.main) {[weak self] (notification) in
         guard let self = self else { return }
@@ -377,14 +393,17 @@ open class VersaPlayerControls: View {
         if handler.isRewinding || handler.isForwarding {
             handler.player.rate = 1
             playPauseButton?.set(active: true)
+            secondPlayAndPauseButton?.set(active: true)
             return;
         }
         if handler.isPlaying {
             playPauseButton?.set(active: false)
+            secondPlayAndPauseButton?.set(active: false)
             handler.pause()
         }else {
             if handler.playbackDelegate?.playbackShouldBegin(player: handler.player) ?? true {
                 playPauseButton?.set(active: true)
+                secondPlayAndPauseButton?.set(active: true)
                 handler.play()
             }
         }
@@ -403,6 +422,7 @@ open class VersaPlayerControls: View {
                 }
             }else {
                 playPauseButton?.set(active: false)
+                secondPlayAndPauseButton?.set(active: false)
                 rewindButton?.set(active: true)
                 wasPlayingBeforeRewinding = handler.isPlaying
                 if !handler.isPlaying {
@@ -426,6 +446,7 @@ open class VersaPlayerControls: View {
                 }
             }else {
                 playPauseButton?.set(active: false)
+                secondPlayAndPauseButton?.set(active: false)
                 forwardButton?.set(active: true)
                 wasPlayingBeforeForwarding = handler.isPlaying
                 if !handler.isPlaying {

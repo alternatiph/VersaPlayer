@@ -249,6 +249,7 @@ open class VersaPlayerView: View, PIPProtocol {
         if playbackDelegate?.playbackShouldBegin(player: player) ?? true {
             player.play()
             controls?.playPauseButton?.set(active: true)
+            controls?.secondPlayAndPauseButton?.set(active: true)
             isPlaying = true
         }
     }
@@ -257,6 +258,7 @@ open class VersaPlayerView: View, PIPProtocol {
     @IBAction open func pause(sender: Any? = nil) {
         player.pause()
         controls?.playPauseButton?.set(active: false)
+        controls?.secondPlayAndPauseButton?.set(active: false)
         isPlaying = false
     }
     

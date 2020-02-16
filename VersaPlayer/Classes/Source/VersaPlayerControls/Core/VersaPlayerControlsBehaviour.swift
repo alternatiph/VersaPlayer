@@ -63,7 +63,7 @@ open class VersaPlayerControlsBehaviour {
         if showingControls && shouldHideControls && !controls.handler.player.isBuffering && !controls.handler.isSeeking && controls.handler.isPlaying {
             let timediff = elapsedTime - activationTime
             if timediff >= deactivationTimeInterval {
-                hide()
+//                hide()
             }
         }
     }
